@@ -5,6 +5,7 @@ from moto import mock_aws
 from guardianpy.config import Config
 from guardianpy.scanners.static import scan_dockerfile, scan_terraform
 from guardianpy.scanners.aws_mock import audit_s3_buckets, audit_iam_users
+from guardianpy.reporters.markdown import generate_markdown_report
 
 def seed_mock_aws_environment():
     """
@@ -91,6 +92,11 @@ def main():
             print(f"[{sev}] Resource: {finding['resource']} ({finding['type']})")
             
         print(f"      Issue: {finding['issue']}\n")
+
+    # --- Phase 3.5: Report Generation ---
+    print("\n[+] Generating local security report...")
+    report_file = generate_markdown_report(all_findings)
+    print(f" -> Markdown report successfully written to: {report_file}")
 
     # --- Phase 4: Gatekeeper Enforcement ---
     print("=" * 60)
