@@ -6,6 +6,7 @@ from guardianpy.config import Config
 from guardianpy.scanners.static import scan_dockerfile, scan_terraform
 from guardianpy.scanners.aws_mock import audit_s3_buckets, audit_iam_users
 from guardianpy.reporters.markdown import generate_markdown_report
+from guardianpy.reporters.notifier import send_security_alert
 
 def seed_mock_aws_environment():
     """
@@ -97,6 +98,11 @@ def main():
     print("\n[+] Generating local security report...")
     report_file = generate_markdown_report(all_findings)
     print(f" -> Markdown report successfully written to: {report_file}")
+
+    # --- Phase 3.7: Live Notification ---
+    if Config.is_notifier_enabled():
+        print("\n[+] Dispatching real-time security alerts...")
+        send_security_alert(all_findings)
 
     # --- Phase 4: Gatekeeper Enforcement ---
     print("=" * 60)
