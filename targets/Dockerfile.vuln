@@ -1,0 +1,14 @@
+# Anti-pattern : Utilisation de latest (non déterministe)
+FROM ubuntu:latest
+
+# Anti-pattern :泄露 / Stockage de secrets en clair
+ENV AWS_SECRET_ACCESS_KEY="AKIAIOSFODNN7EXAMPLE"
+ENV APP_VERSION="1.0.0"
+
+RUN apt-get update && apt-get install -y curl
+
+WORKDIR /app
+COPY . /app
+
+# Anti-pattern : Pas de directive USER, le conteneur tourne en ROOT par défaut
+CMD ["python3", "-m", "http.server", "8080"]

@@ -1,0 +1,18 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
+# Configuration légitime
+resource "aws_s3_bucket" "secure_bucket" {
+  bucket = "guardianpy-production-data-private"
+}
+
+# Anti-pattern : Bucket S3 configuré comme public (Fuite de données)
+resource "aws_s3_bucket" "leaky_bucket" {
+  bucket = "guardianpy-public-exposure-bucket"
+}
+
+resource "aws_s3_bucket_acl" "leaky_bucket_acl" {
+  bucket = aws_s3_bucket.leaky_bucket.id
+  acl    = "public-read" 
+}
