@@ -41,10 +41,16 @@ def _dispatch_webhook(url: str, payload: dict):
     """
     try:
         data = json.dumps(payload).encode('utf-8')
+        # We explicitly add a custom User-Agent to bypass Discord's Cloudflare anti-bot blocks
+        headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': 'GuardianPy-SecurityBot/1.0'
+        }
+        
         req = urllib.request.Request(
             url, 
             data=data, 
-            headers={'Content-Type': 'application/json'}
+            headers=headers
         )
         with urllib.request.urlopen(req, timeout=5) as response:
             if response.status in [200, 204]:
